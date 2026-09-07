@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Анімована реєстрація</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ===== ОСНОВНІ СТИЛІ ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            background: #050505;
+            overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .page {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, #17284c 0%, #080b12 45%, #020202 75%);
+        }
+
+        .screen {
+            position: relative;
+            width: min(92vw, 650px);
+            height: 390px;
+            background: #4775ed;
+            border: 2px solid rgba(255, 255, 255, .9);
+            box-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 35px rgba(60, 110, 255, .8), 0 0 80px rgba(50, 90, 255, .4);
+            overflow: hidden;
+        }
+        .screen::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, .05), transparent 35%);
+            z-index: 1;
+        }
+
+        /* ===== ЧОЛОВІК ===== */
+        .man {
+            position: absolute;
+            left: -100px;
+            bottom: 58px;
+            width: 105px;
+            height: 205px;
+            z-index: 20;
+            transform-origin: 50% 90%;
+            animation: walkIn 3.2s cubic-bezier(.25, .8, .25, 1) forwards;
+        }
+        .man.lean {
+            animation: leanRight .9s cubic-bezier(.2, .8, .3, 1) forwards;
+        }
+
+        /* ===== ГОЛОВА ===== */
+        .head {
+            position: absolute;
+            width: 44px;
+            height: 51px;
+            left: 30px;
+            top: 3px;
+            border-radius: 48% 48% 45% 45%;
+            background: linear-gradient(100deg, #f1b77d, #d99459);
+            z-index: 5;
+        }
+        .hair {
+            position: absolute;
+            width: 45px;
+            height: 25px;
+            left: -1px;
+            top: -7px;
+            border-radius: 50% 55% 35% 25%;
+            background: linear-gradient(90deg, #e4a93f, #b8751f);
+            transform: rotate(-4deg);
+        }
+        .hair::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 19px;
+            right: -2px;
+            top: 7px;
+            background: #b8751f;
+            border-radius: 0 60% 60% 0;
+        }
+        .ear {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            right: -6px;
+            top: 20px;
+            border-radius: 50%;
+            background: #d8935b;
+        }
+        .eye {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #222;
+            top: 25px;
+        }
+        .eye.left { left: 10px; }
+        .eye.right { right: 9px; }
+        .brow {
+            position: absolute;
+            width: 9px;
+            height: 2px;
+            background: #815124;
+            top: 20px;
+            border-radius: 2px;
+        }
+        .brow.left { left: 8px;
+            transform: rotate(-5deg); }
+        .brow.right { right: 8px;
+            transform: rotate(5deg); }
+        .nose {
+            position: absolute;
+            left: 19px;
+            top: 27px;
+            width: 6px;
+            height: 8px;
+            border-right: 2px solid rgba(130, 70, 40, .45);
+            transform: rotate(10deg);
+        }
+        .mouth {
+            position: absolute;
+            left: 15px;
+            top: 39px;
+            width: 14px;
+            height: 4px;
+            border-bottom: 2px solid #873e35;
+            border-radius: 50%;
+        }
+
+        /* ===== ШИЯ ===== */
+        .neck {
+            position: absolute;
+            width: 17px;
+            height: 17px;
+            left: 43px;
+            top: 48px;
+            background: #d9945f;
+            z-index: 2;
+        }
+
+        /* ===== ТІЛО ===== */
+        .torso {
+            position: absolute;
+            left: 23px;
+            top: 58px;
+            width: 60px;
+            height: 79px;
+            background: linear-gradient(90deg, #999da3 0%, #e1e2e3 48%, #9c9fa4 100%);
+            border-radius: 10px 10px 5px 5px;
+            z-index: 3;
+        }
+        .shirt {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            width: 21px;
+            height: 70px;
+            background: #f7f7f7;
+            clip-path: polygon(15% 0, 85% 0, 100% 100%, 0 100%);
+        }
+        .tie {
+            position: absolute;
+            left: 27px;
+            top: 5px;
+            width: 10px;
+            height: 55px;
+            background: linear-gradient(90deg, #282828, #444, #1b1b1b);
+            clip-path: polygon(15% 0, 85% 0, 100% 82%, 50% 100%, 0 82%);
+            z-index: 5;
+        }
+        .pocket {
+            position: absolute;
+            right: 8px;
+            top: 31px;
+            width: 15px;
+            height: 11px;
+            border-bottom: 2px solid #777;
+        }
+
+        /* ===== РУКИ ===== */
+        .arm {
+            position: absolute;
+            width: 17px;
+            height: 73px;
+            top: 61px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #a7aaae, #d7d7d7);
+            transform-origin: 50% 10%;
+            z-index: 2;
+        }
+        .arm.left {
+            left: 12px;
+            transform: rotate(13deg);
+            animation: leftArmWalk .6s ease-in-out infinite alternate;
+        }
+        .arm.right {
+            right: 9px;
+            transform: rotate(-17deg);
+            animation: rightArmWalk .6s ease-in-out infinite alternate;
+        }
+        .hand {
+            position: absolute;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #e4a675;
+            top: 123px;
+            z-index: 6;
+        }
+        .hand.left { left: 5px; }
+        .hand.right { right: 4px; }
+
+        /* ===== НОГИ ===== */
+        .leg {
+            position: absolute;
+            width: 20px;
+            height: 75px;
+            top: 128px;
+            background: linear-gradient(90deg, #111, #252525, #0b0b0b);
+            border-radius: 7px;
+            transform-origin: top center;
+            z-index: 1;
+        }
+        .leg.left {
+            left: 30px;
+            animation: leftLeg .55s ease-in-out infinite alternate;
+        }
+        .leg.right {
+            left: 55px;
+            animation: rightLeg .55s ease-in-out infinite alternate;
+        }
+        .shoe {
+            position: absolute;
+            width: 32px;
+            height: 12px;
+            bottom: -5px;
+            background: #f5f5f5;
+            border-radius: 12px 13px 5px 5px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, .3);
+        }
+        .leg.left .shoe { left: -8px; }
+        .leg.right .shoe { left: -7px; }
+
+        /* ===== РЮКЗАК ===== */
+        .backpack {
+            position: absolute;
+            left: 250px;
+            bottom: 65px;
+            width: 58px;
+            height: 68px;
+            background: linear-gradient(135deg, #8b4b29, #542817);
+            border-radius: 10px;
+            z-index: 8;
+            opacity: 0;
+            transform: translateY(-40px) rotate(-7deg);
+            box-shadow: 4px 6px 9px rgba(0, 0, 0, .3);
+        }
+        .backpack.show {
+            animation: backpackDrop .7s ease forwards;
+        }
+        .backpack.hide {
+            animation: backpackDisappear .6s ease forwards;
+        }
+        .backpack::before {
+            content: "";
+            position: absolute;
+            width: 26px;
+            height: 13px;
+            left: 15px;
+            top: -10px;
+            border: 4px solid #462315;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+        .backpack::after {
+            content: "";
+            position: absolute;
+            width: 32px;
+            height: 18px;
+            left: 13px;
+            bottom: 10px;
+            border-radius: 5px;
+            background: #71381f;
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        /* ===== КЛАЦАННЯ ===== */
+        .snap {
+            position: absolute;
+            left: 105px;
+            top: 95px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 50;
+            opacity: 0;
+            transform: scale(.4);
+        }
+        .snap.show {
+            animation: snapAnimation .5s ease forwards;
+        }
+        .snap::before,
+        .snap::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: white;
+            top: 9px;
+        }
+        .snap::before {
+            right: 22px;
+            transform: rotate(-30deg);
+        }
+        .snap::after {
+            left: 22px;
+            transform: rotate(30deg);
+        }
+
+        /* ===== ІКОНКА ФОРМИ ===== */
+        .form-icon {
+            position: absolute;
+            left: 325px;
+            top: 120px;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4775ed;
+            font-size: 34px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, .25);
+            z-index: 30;
+            opacity: 0;
+            transform: scale(0) rotate(-30deg);
+        }
+        .form-icon.show {
+            animation: iconPop .8s cubic-bezier(.17, .89, .32, 1.3) forwards;
+        }
+        .form-icon::after {
+            content: "";
+            width: 25px;
+            height: 31px;
+            border: 3px solid #4775ed;
+            border-radius: 3px;
+            background: white;
+            box-shadow: inset 0 8px 0 white;
+            position: absolute;
+        }
+        .form-icon::before {
+            content: "";
+            position: absolute;
+            width: 13px;
+            height: 2px;
+            background: #4775ed;
+            box-shadow: 0 6px 0 #4775ed, 0 12px 0 #4775ed;
+            z-index: 2;
+            animation: iconRing 1.3s ease-out infinite;
+        }
+
+        /* ===== ФОРМА ===== */
+        .login-form {
+            position: absolute;
+            width: 330px;
+            right: 25px;
+            top: 28px;
+            z-index: 25;
+            opacity: 0;
+            transform: translateX(380px) scale(.75);
+            color: white;
+            text-align: center;
+        }
+        .login-form.show {
+            animation: formAppear 1s cubic-bezier(.22, .8, .25, 1) forwards;
+        }
+        .login-form h2 {
+            font-size: 27px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .description {
+            font-size: 10px;
+            opacity: .9;
+            margin-bottom: 13px;
+        }
+        .label {
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+        .field {
+            position: relative;
+            width: 100%;
+            margin-bottom: 11px;
+        }
+        .field .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #444;
+            font-size: 14px;
+        }
+        .login-form input {
+            width: 100%;
+            height: 38px;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            background: white;
+            padding: 0 10px 0 34px;
+            font-size: 11px;
+            color: #222;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .15);
+        }
+        .login-form input::placeholder {
+            color: #555;
+        }
+        .next {
+            width: 100%;
+            height: 38px;
+            border: none;
+            border-radius: 5px;
+            background: #0cba70;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .next:hover {
+            background: #07995d;
+            transform: translateY(-1px);
+        }
+        .signup {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 7px 12px;
+            border-radius: 4px;
+            background: white;
+            color: #777;
+            font-size: 8px;
+            text-decoration: none;
+        }
+
+        /* ===== АНІМАЦІЇ ===== */
+        @keyframes walkIn {
+            0% { left: -100px;
+                transform: translateY(0) rotate(0); }
+            15% { transform: translateY(-5px) rotate(-2deg); }
+            30% { transform: translateY(0) rotate(2deg); }
+            45% { transform: translateY(-5px) rotate(-2deg); }
+            60% { transform: translateY(0) rotate(2deg); }
+            78% { left: 180px;
+                transform: translateY(-2px) rotate(0); }
+            100% { left: 180px;
+                transform: translateY(0) rotate(0); }
+        }
+        @keyframes leftLeg {
+            from { transform: rotate(20deg); }
+            to { transform: rotate(-20deg); }
+        }
+        @keyframes rightLeg {
+            from { transform: rotate(-20deg); }
+            to { transform: rotate(20deg); }
+        }
+        @keyframes leftArmWalk {
+            from { transform: rotate(18deg); }
+            to { transform: rotate(-18deg); }
+        }
+        @keyframes rightArmWalk {
+            from { transform: rotate(-18deg); }
+            to { transform: rotate(18deg); }
+        }
+        @keyframes backpackDrop {
+            0% { opacity: 0;
+                transform: translateY(-40px) rotate(-7deg); }
+            60% { opacity: 1;
+                transform: translateY(8px) rotate(3deg); }
+            100% { opacity: 1;
+                transform: translateY(0) rotate(0); }
+        }
+        @keyframes backpackDisappear {
+            0% { opacity: 1;
+                transform: translateY(0) scale(1); }
+            100% { opacity: 0;
+                transform: translateY(15px) scale(.65); }
+        }
+        @keyframes snapAnimation {
+            0% { opacity: 0;
+                transform: scale(.4) rotate(-20deg); }
+            40% { opacity: 1;
+                transform: scale(1.3) rotate(5deg); }
+            100% { opacity: 0;
+                transform: scale(1) rotate(0); }
+        }
+        @keyframes iconPop {
+            0% { opacity: 0;
+                transform: scale(0) rotate(-40deg); }
+            50% { opacity: 1;
+                transform: scale(1.2) rotate(10deg); }
+            75% { transform: scale(.95) rotate(-3deg); }
+            100% { opacity: 1;
+                transform: scale(1) rotate(0); }
+        }
+        @keyframes iconRing {
+            0% { opacity: .8; }
+            100% { opacity: 0; }
+        }
+        @keyframes formAppear {
+            0% { opacity: 0;
+                transform: translateX(380px) scale(.75); }
+            60% { opacity: 1;
+                transform: translateX(-15px) scale(1.03); }
+            100% { opacity: 1;
+                transform: translateX(0) scale(1); }
+        }
+        @keyframes leanRight {
+            0% { left: 180px;
+                transform: rotate(0deg); }
+            100% { left: 235px;
+                transform: rotate(8deg); }
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 700px) {
+            .screen { width: 94vw;
+                height: 330px; }
+            .login-form { width: 52%;
+                right: 12px;
+                top: 35px; }
+            .login-form h2 { font-size: 19px; }
+            .login-form input,
+            .next { height: 30px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="screen">
+
+            <!-- ЧОЛОВІК -->
+            <div class="man" id="man">
+                <div class="head">
+                    <div class="hair"></div>
+                    <div class="ear"></div>
+                    <div class="brow left"></div>
+                    <div class="brow right"></div>
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="neck"></div>
+                <div class="torso">
+                    <div class="shirt"></div>
+                    <div class="tie"></div>
+                    <div class="pocket"></div>
+                </div>
+                <div class="arm left"></div>
+                <div class="arm right"></div>
+                <div class="hand left"></div>
+                <div class="hand right"></div>
+                <div class="leg left"><div class="shoe"></div></div>
+                <div class="leg right"><div class="shoe"></div></div>
+            </div>
+
+            <!-- РЮКЗАК -->
+            <div class="backpack" id="backpack"></div>
+
+            <!-- КЛАЦАННЯ -->
+            <div class="snap" id="snap">✦</div>
+
+            <!-- ІКОНКА ФОРМИ -->
+            <div class="form-icon" id="formIcon"></div>
+
+            <!-- ФОРМА -->
+            <form class="login-form" id="loginForm">
+                <h2>Register now</h2>
+                <div class="description">Secure your spot in our upcoming free webinar</div>
+
+                <div class="label">What's your name? *</div>
+                <div class="field">
+                    <span class="icon">♙</span>
+                    <input type="text" id="regName" placeholder="Name" required />
+                </div>
+
+                <div class="field">
+                    <span class="icon">♙</span>
+                    <input type="text" id="regSurname" placeholder="Surname" required />
+                </div>
+
+                <div class="label">Enter your email address *</div>
+                <div class="field">
+                    <span class="icon">✉</span>
+                    <input type="email" id="regEmail" placeholder="Ex. yourname@example.com" required />
+                </div>
+
+                <button type="submit" class="next">Next</button>
+                <a href="#" class="signup" id="toggleAuth">Already have an account?</a>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        /* =====================================================
+           ЕЛЕМЕНТИ
+        ===================================================== */
+        const man = document.getElementById("man");
+        const backpack = document.getElementById("backpack");
+        const snap = document.getElementById("snap");
+        const formIcon = document.getElementById("formIcon");
+        const loginForm = document.getElementById("loginForm");
+        const toggleAuth = document.getElementById("toggleAuth");
+
+        /* =====================================================
+           АНІМАЦІЙНИЙ ЛАНЦЮЖОК
+        ===================================================== */
+        setTimeout(() => {
+            backpack.classList.add("show");
+        }, 3500);
+
+        setTimeout(() => {
+            backpack.classList.remove("show");
+            backpack.classList.add("hide");
+        }, 4700);
+
+        setTimeout(() => {
+            snap.classList.add("show");
+        }, 4300);
+
+        setTimeout(() => {
+            formIcon.classList.add("show");
+        }, 4650);
+
+        setTimeout(() => {
+            loginForm.classList.add("show");
+        }, 5200);
+
+        setTimeout(() => {
+            man.classList.add("lean");
+        }, 6500);
+
+        /* =====================================================
+           ОБРОБКА ФОРМИ
+           — Валідація та збереження даних у localStorage
+        ===================================================== */
+        loginForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("regName").value.trim();
+            const surname = document.getElementById("regSurname").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+
+            // Валідація
+            if (!name || !surname || !email) {
+                alert("❗ Будь ласка, заповніть усі поля!");
+                return;
+            }
+            if (!email.includes("@") || !email.includes(".")) {
+                alert("❗ Введіть коректний email (має містити @ та .)");
+                return;
+            }
+
+            // Збереження даних у localStorage
+            const userData = { name, surname, email, registered: new Date().toISOString() };
+            localStorage.setItem("registeredUser", JSON.stringify(userData));
+
+            // Зміна кнопки
+            const button = this.querySelector(".next");
+            button.innerText = "✅ Submitted";
+            button.style.background = "#078f58";
+
+            // Сповіщення
+            alert(`🎉 Вітаємо, ${name} ${surname}!\nВи успішно зареєструвались.\nEmail: ${email}`);
+
+            // Можна додати логіку переходу на іншу сторінку
+            // window.location.href = "/welcome";
+        });
+
+        /* =====================================================
+           ПЕРЕМИКАННЯ РЕЄСТРАЦІЯ / ВХІД
+        ===================================================== */
+        let isLoginMode = false;
+
+        toggleAuth.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            isLoginMode = !isLoginMode;
+            const title = loginForm.querySelector("h2");
+            const btn = loginForm.querySelector(".next");
+            const desc = loginForm.querySelector(".description");
+            const nameField = document.getElementById("regName");
+            const surnameField = document.getElementById("regSurname");
+            const labelFields = loginForm.querySelectorAll(".label");
+
+            if (isLoginMode) {
+                title.innerText = "Login";
+                btn.innerText = "Login";
+                desc.innerText = "Welcome back! Enter your credentials.";
+                nameField.placeholder = "Email or username";
+                surnameField.style.display = "none";
+                surnameField.required = false;
+                labelFields[0].innerText = "Email or username *";
+                labelFields[1].innerText = "Enter your password *";
+                toggleAuth.innerText = "Don't have an account? Sign up";
+                // Змінюємо іконку на замок
+                const icons = loginForm.querySelectorAll(".field .icon");
+                icons[0].innerText = "👤";
+                icons[1].innerText = "🔒";
+                // Змінюємо другий інпут на пароль
+                surnameField.type = "password";
+                surnameField.placeholder = "Password";
+                surnameField.style.display = "block";
+                // Прибираємо попередній email-інпут, щоб не плутати
+                // Але ми просто використовуємо email поле для логіну
+                document.getElementById("regEmail").placeholder = "Email or username";
+            } else {
+                title.innerText = "Register now";
+                btn.innerText = "Next";
+                desc.innerText = "Secure your spot in our upcoming free webinar";
+                nameField.placeholder = "Name";
+                surnameField.style.display = "block";
+                surnameField.required = true;
+                surnameField.type = "text";
+                surnameField.placeholder = "Surname";
+                labelFields[0].innerText = "What's your name? *";
+                labelFields[1].innerText = "Enter your email address *";
+                toggleAuth.innerText = "Already have an account?";
+                document.getElementById("regEmail").placeholder = "Ex. yourname@example.com";
+                const icons = loginForm.querySelectorAll(".field .icon");
+                icons[0].innerText = "♙";
+                icons[1].innerText = "♙";
+            }
+        });
+
+        /* =====================================================
+           ЗАВАНТАЖЕННЯ ЗБЕРЕЖЕНИХ ДАНИХ (якщо є)
+        ===================================================== */
+        window.addEventListener("DOMContentLoaded", function() {
+            const saved = localStorage.getItem("registeredUser");
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    document.getElementById("regName").value = data.name || "";
+                    document.getElementById("regSurname").value = data.surname || "";
+                    document.getElementById("regEmail").value = data.email || "";
+                } catch (e) { /* ігноруємо */ }
+            }
+        });
+    </script>
+</body>
+</html>
